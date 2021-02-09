@@ -1,12 +1,24 @@
+// Packages
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+// Custom components
 import App from './App';
+import Login from './components/Auth/Login/Login'
+import Register from './components/Auth/Register/Register'
 import reportWebVitals from './reportWebVitals';
+// CSS
+import 'semantic-ui-css/semantic.min.css'
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <Switch>
+        <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
+        <Route path="/" component={App} />
+      </Switch>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );
