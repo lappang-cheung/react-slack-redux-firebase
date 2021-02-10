@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { 
     Grid, 
@@ -9,6 +10,8 @@ import {
     Button, 
     Message
 } from 'semantic-ui-react'
+
+import firebase from '../../../server/firebase'
 
 const GridForm = styled(Grid)`
     padding: 1rem;
@@ -27,8 +30,12 @@ const Register = () => {
 
     let errors = []
 
+    let userCollectionRef = firebase.database().ref('users')
+
     const [userState, setUserState] = useState(user)
     const [errorState, setErrorState] = useState(errors)
+    const [isLoading, setIsLoading] = useState(false)
+    const [isSuccess, setIsSuccess]  = useState(false)
 
     const handleInput = (event) => {
         let target = event.target;
@@ -73,13 +80,59 @@ const Register = () => {
         return errorState.map((error, index) => <p key={index}>{error.message}</p>)
     }
 
+    const updateUserDetails = createdUser => {
+        setIsLoading(true)
+        if (createdUser) {
+            createdUser.user
+            .updateProfile({
+                displayName: userState.userName,
+                photoURL: `http://gravatar.com/avatar/${createdUser.user.uid}?d=identicon`
+            })
+            .then(() => {
+                saveUserInDB(createdUser)
+                setIsLoading(false)
+            })
+            .catch(serverError => {
+                setErrorState((error) => error.concat(serverError))
+                setIsLoading(false)
+            })
+        }
+    }
+
+    const saveUserInDB = createdUser => {
+        setIsLoading(true)
+        userCollectionRef.child(createdUser.user.uid).set({
+            displayName: createdUser.user.displayName,
+            photoURL: createdUser.user.photoURL
+        })
+        .then(() => {
+            setIsSuccess(true)
+            setIsLoading(false)
+        })
+        .catch(serverError => {
+            setErrorState((error) => error.concat(serverError))
+            setIsLoading(false)
+        })
+    }
+
     const onSubmit = (event) => {
+        event.preventDefault()
         setErrorState(() => [])
+        setIsSuccess(false)
 
         if(checkForm()) {
-
-        } else {
-
+            setIsLoading(true)
+            firebase
+                .auth()
+                .createUserWithEmailAndPassword(userState.email, userState.password)
+                .then(createdUser => {
+                    updateUserDetails(createdUser)
+                    setIsLoading(false)
+                })
+                .catch(serverError => {
+                    setErrorState((error) => error.concat(serverError))
+                    setIsLoading(false)
+                })
         }
     }
 
@@ -134,13 +187,24 @@ const Register = () => {
                             placeholder="Confirm password"
                         />
                     </Segment>
-                    <Button>Submit</Button>
+                    <Button disabled={isLoading} loading={isLoading}>Submit</Button>
                 </Form>
                 {
                     errorState.length > 0  &&
                     <Message error>
                         <h3>Errors</h3>
                         {formatErrors()}
+                    </Message>
+                }
+                {
+                    isSuccess &&
+                    <Message success>
+                        <h3>Successfully Registered</h3>
+                    </Message>
+                }
+                {
+                    <Message>
+                        Already an user? <Link to="/login">Login</Link>
                     </Message>
                 }
             </Grid.Column>
