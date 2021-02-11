@@ -20,6 +20,7 @@ const MessageContentContainer = styled(Segment)`
 const Messages = (props) => {
 
     const [messagesState, setMessagesState] = useState([])
+    const [searchTermState, setSearchTermState] = useState('')
 
     const messageRef = firebase.database().ref('messages')
 
@@ -39,8 +40,12 @@ const Messages = (props) => {
     }, [props.channel])
 
     const displayMessages = () => {
-        if(messagesState.length > 0) {
-            return messagesState.map(message => {
+        let messagesToDisplay = searchTermState 
+            ? filterMessageBySearchTerm() 
+            : messagesState
+
+        if(messagesToDisplay.length > 0) {
+            return messagesToDisplay.map(message => {
                 return <MessageContent 
                     ownMessage={message.user.id === props.user.uid}
                     key={message.timestamp} 
@@ -50,9 +55,43 @@ const Messages = (props) => {
         }
     }
 
+    const uniqueUsersCount = () => {
+        const uniqueUsers = messagesState.reduce((acc, message) => {
+            if(!acc.includes(message.user.name)){
+                acc.push(message.user.name)
+            }
+            return acc
+        }, [])
+
+        return uniqueUsers.length
+    }
+
+    const searchTermChange = event => {
+        const target = event.target
+        setSearchTermState(target.value)
+    }
+
+    const filterMessageBySearchTerm = () => {
+
+        const regex = new RegExp(searchTermState, "gi")
+
+        const messages = messagesState.reduce((acc, message) => {
+            if((message.content && message.content.match(regex)) || message.user.name.match(regex)){
+                acc.push(message)
+            }
+            return acc
+        }, [])
+
+        return messages
+    }
+
     return(
         <div>
-            <MessageHeader />
+            <MessageHeader 
+                channelName={props.channel?.name} 
+                uniqueUsers={uniqueUsersCount()}
+                searchTermChange={searchTermChange}
+            />
             <MessageContentContainer>
                 <Comment.Group>
                     {displayMessages()}
