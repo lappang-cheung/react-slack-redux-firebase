@@ -1,24 +1,69 @@
 // Packages
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import ReactDOM from 'react-dom'
+import { BrowserRouter as Router, Switch, Route, withRouter } from 'react-router-dom'
+import { Provider, connect } from 'react-redux'
+import { createStore } from 'redux'
+
 // Custom components
-import App from './App';
+import App from './App'
 import Login from './components/Auth/Login/Login'
 import Register from './components/Auth/Register/Register'
-import reportWebVitals from './reportWebVitals';
+import firebase from './server/firebase'
+import reportWebVitals from './reportWebVitals'
+
+// Redux
+import { setUser } from './store/actions/actionCreator'
+import { combinedReducers } from './store/reducers/reducers'
+
 // CSS
 import 'semantic-ui-css/semantic.min.css'
 
+const store = createStore(combinedReducers)
+
+const Index = (props) => {
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(user => {
+      if(user) {
+        props.setUser(user)
+        props.history.push("/")
+      } else {
+        props.setUser(null)
+        props.history.push("/login")
+      }
+    })
+  }, []) 
+  
+  return (
+    <Switch>
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      <Route path="/" component={App} />
+    </Switch>
+  )
+}
+
+const mapStateToProps = state => {
+  return {
+    currentUser: state.user.currentUser
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    setUser: (user) => {dispatch(setUser(user))}
+  }
+}
+
+const IndexWithRouter = withRouter(connect(mapStateToProps, mapDispatchToProps)(Index))
+
 ReactDOM.render(
   <React.StrictMode>
-    <Router>
-      <Switch>
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-        <Route path="/" component={App} />
-      </Switch>
-    </Router>
+    <Provider store={store}>
+      <Router>
+        <IndexWithRouter />
+      </Router>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
