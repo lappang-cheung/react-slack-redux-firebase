@@ -24,13 +24,18 @@ const Channels = (props) => {
             setChannelState(currentState => {
                 let updatedState = [...currentState]
                 updatedState.push(snap.val())
-                if(updatedState.length === 1) {
-                    props.selectChannel(updatedState[0])
-                }
                 return updatedState
             })
         })
+
+        return () => channelsRef.off()
     }, [])
+
+    useEffect(() => {
+        if(channelState.length > 0) {
+            props.selectChannel(channelState[0])
+        }
+    }, [!props.channel ? channelState : null])
     
     const modalToggle = () => {
         setModalOpenState(!modalOpenState)
@@ -56,7 +61,7 @@ const Channels = (props) => {
                     key={channel.id}
                     name={channel.name}
                     onClick={() => props.selectChannel(channel)}
-                    active={channel.id === props.channel.id}
+                    active={props.channel && channel.id === props.channel.id}
                 >
                 </Menu.Item>
             })
