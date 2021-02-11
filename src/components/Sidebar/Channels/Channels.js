@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Menu, Icon, Modal, Segment, Form, Button } from 'semantic-ui-react'
 
 import firebase from '../../../server/firebase'
+import { setChannel } from '../../../store/actions/actionCreator'
 
 const Channels = (props) => {
 
@@ -23,6 +24,9 @@ const Channels = (props) => {
             setChannelState(currentState => {
                 let updatedState = [...currentState]
                 updatedState.push(snap.val())
+                if(updatedState.length === 1) {
+                    props.selectChannel(updatedState[0])
+                }
                 return updatedState
             })
         })
@@ -51,8 +55,9 @@ const Channels = (props) => {
                 return <Menu.Item
                     key={channel.id}
                     name={channel.name}
+                    onClick={() => props.selectChannel(channel)}
+                    active={channel.id === props.channel.id}
                 >
-
                 </Menu.Item>
             })
         }
@@ -149,8 +154,15 @@ const Channels = (props) => {
 
 const mapStateToProps = state => {
     return {
-        user: state.user.currentUser
+        user: state.user.currentUser,
+        channel: state.channel.currentChannel
     }
 }
 
-export default connect(mapStateToProps)(Channels)
+const mapDispatchToProps = dispatch => {
+    return {
+        selectChannel: channel => dispatch(setChannel(channel))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Channels)
