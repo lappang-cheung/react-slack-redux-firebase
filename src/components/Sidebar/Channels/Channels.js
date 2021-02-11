@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Menu, Icon, Modal, Segment, Form, Button } from 'semantic-ui-react'
 
@@ -14,8 +14,19 @@ const Channels = (props) => {
     const [modalOpenState, setModalOpenState] = useState(false)
     const [channelAddState, setChannelAddState] = useState(channel)
     const [isLoading, setIsLoading] = useState(false)
+    const [channelState, setChannelState] = useState([])
 
     const channelsRef = firebase.database().ref("channels")
+
+    useEffect(() => {
+        channelsRef.on('child_added', (snap) => {
+            setChannelState(currentState => {
+                let updatedState = [...currentState]
+                updatedState.push(snap.val())
+                return updatedState
+            })
+        })
+    }, [])
     
     const modalToggle = () => {
         setModalOpenState(!modalOpenState)
@@ -32,6 +43,19 @@ const Channels = (props) => {
 
     const checkIfFormValid = () => {
         return channelAddState && channelAddState.name && channelAddState.description
+    }
+
+    const displayChannels = () => {
+        if(channelState.length > 0) {
+            return channelState.map(channel => {
+                return <Menu.Item
+                    key={channel.id}
+                    name={channel.name}
+                >
+
+                </Menu.Item>
+            })
+        }
     }
 
     const onSubmit = (event) => {
@@ -76,8 +100,9 @@ const Channels = (props) => {
                     <span>
                         <Icon name="exchange"/> Channels
                     </span>
-                    (0)
+                    ({channelState.length})
                 </Menu.Item>
+                {displayChannels()}
                 <Menu.Item onClick={modalToggle}>
                     <span>
                         <Icon name="add" /> ADD
