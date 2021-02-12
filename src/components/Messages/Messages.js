@@ -44,7 +44,7 @@ const Messages = (props) => {
             ? filterMessageBySearchTerm() 
             : messagesState
 
-        if(messagesToDisplay.length > 0) {
+        if(messagesToDisplay.length > 0 && props.user) {
             return messagesToDisplay.map(message => {
                 return <MessageContent 
                     ownMessage={message.user.id === props.user.uid}
@@ -88,6 +88,7 @@ const Messages = (props) => {
     return(
         <div>
             <MessageHeader 
+                isPrivateChat={props.channel?.isPrivateChat}
                 channelName={props.channel?.name} 
                 uniqueUsers={uniqueUsersCount()}
                 searchTermChange={searchTermChange}

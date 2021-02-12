@@ -3,6 +3,7 @@ import styled  from 'styled-components'
 
 import UserInfo from './UserInfo/UserInfo'
 import Channels from './Channels/Channels'
+import PrivateChat from './PrivateChat/PrivateChat'
 
 const SideMenu = styled(Menu)`
     background: #4c3c4c !important;
@@ -14,6 +15,7 @@ const Sidebar = () => {
         <SideMenu vertical fixed="left" borderless size="large">
             <UserInfo />
             <Channels />
+            <PrivateChat />
         </SideMenu>
     )
 }
