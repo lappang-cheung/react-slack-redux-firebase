@@ -88,6 +88,7 @@ const Messages = (props) => {
     return(
         <div>
             <MessageHeader 
+                isPrivateChat={props.channel?.isPrivateChat}
                 channelName={props.channel?.name} 
                 uniqueUsers={uniqueUsersCount()}
                 searchTermChange={searchTermChange}

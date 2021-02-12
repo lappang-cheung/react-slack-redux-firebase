@@ -19,6 +19,7 @@ const PrivateChat = (props) => {
 
                 user.name = user.displayName
                 user.id = snap.key
+                user.isPrivateChat = true
                 updatedState.push(user)
 
                 return updatedState
@@ -34,8 +35,8 @@ const PrivateChat = (props) => {
                 return <Menu.Item 
                     key={user.id}
                     name={user.name}
-                    onClick={() => props.selectChannel(user)}
-                    active={props.channel && user.id === props.channel.id}
+                    onClick={() => selectUser(user)}
+                    active={props.channel && generateChannelId(user.id) === props.channel.id}
                 >
                     @ {user.name}
                 </Menu.Item>
@@ -43,6 +44,19 @@ const PrivateChat = (props) => {
         }
     }
 
+    const selectUser = user => {
+        let userTemp = {...user}
+        userTemp.id = generateChannelId(user.id)
+        props.selectChannel(userTemp)
+    }
+
+    const generateChannelId = userId => {
+        if(props.user.uid < userId) {
+            return props.user.uid + userId
+        } else {
+            return userId + props.user.uid
+        }
+    }
 
     return (
         <Menu.Menu>
