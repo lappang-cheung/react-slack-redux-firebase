@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Segment, Input, Button } from "semantic-ui-react";
-import firebase from "../../../server/firebase";
-import { connect } from "react-redux";
-import { ImageUpload } from "../ImageUpload/ImageUpload.component"
-import {v4 as uuidv4} from "uuid";
+import { Segment, Input, Button } from 'semantic-ui-react';
+import firebase from '../../../server/firebase';
+import { connect } from 'react-redux';
+import { ImageUpload } from '../ImageUpload/ImageUpload'
+import {v4 as uuidv4} from 'uuid';
 
 const MessageInput = (props) => {
 
@@ -11,7 +11,7 @@ const MessageInput = (props) => {
 
     const storageRef = firebase.storage().ref();
 
-    const [messageState, setMessageState] = useState("");
+    const [messageState, setMessageState] = useState('');
 
     const [fileDialogState, setFileDialog] = useState(false);
 
@@ -23,7 +23,7 @@ const MessageInput = (props) => {
                 id: props.user.uid
             },
             content: messageState,
-            image : downloadUrl || "",
+            image : downloadUrl || '',
             timestamp: firebase.database.ServerValue.TIMESTAMP
         }
     }
@@ -33,7 +33,7 @@ const MessageInput = (props) => {
             messageRef.child(props.channel.id)
                 .push()
                 .set(createMessageInfo(downloadUrl))
-                .then(() => setMessageState(""))
+                .then(() => setMessageState(''))
                 .catch((err) => console.log(err))
         }
     }
@@ -45,8 +45,8 @@ const MessageInput = (props) => {
 
     const createActionButtons = () => {
         return <>
-            <Button icon="send" onClick={() => {sendMessage() }} />
-            <Button icon="upload" onClick={() => setFileDialog(true)} />
+            <Button icon='send' onClick={() => {sendMessage() }} />
+            <Button icon='upload' onClick={() => setFileDialog(true)} />
         </>
     }
 
@@ -69,10 +69,10 @@ const MessageInput = (props) => {
         <Input
             onChange={onMessageChange}
             fluid={true}
-            name="message"
+            name='message'
             value={messageState}
             label={createActionButtons()}
-            labelPosition="right"
+            labelPosition='right'
         />
         <ImageUpload uploadImage={uploadImage} open={fileDialogState} onClose={() => setFileDialog(false)} />
     </Segment>

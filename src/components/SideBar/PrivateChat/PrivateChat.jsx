@@ -1,52 +1,62 @@
+// Required Packages
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import firebase from "../../../server/firebase";
-import { setChannel } from "../../../store/actions/creator"
-import { Notification } from "../Notification/Notification.component";
-
 import { Menu, Icon } from 'semantic-ui-react';
 
+// Custom Package
+import firebase from '../../../server/firebase';
+
+// Redux func
+import { setChannel } from '../../../store/actions/creator'
+import { Notification } from '../Notification/Notification';
+
+
 const PrivateChat = (props) => {
-
+    // State
     const [usersState, setUsersState] = useState([]);
-
     const [connectedUsersState, setConnectedUsersState] = useState([]);
 
-    const usersRef = firebase.database().ref("users");
-
-    const connectedRef = firebase.database().ref(".info/connected");
-
-    const statusRef = firebase.database().ref("status");
+    // Firebase refs
+    const usersRef = firebase.database().ref('users');
+    const connectedRef = firebase.database().ref('.info/connected');
+    const statusRef = firebase.database().ref('status');
 
     useEffect(() => {
+        // Add user online && onMount
         usersRef.on('child_added', (snap) => {
             setUsersState((currentState) => {
+                // Current and update state of users
                 let updatedState = [...currentState];
-
                 let user = snap.val();
+                // Set user info
                 user.name = user.displayName;
                 user.id = snap.key;
                 user.isPrivateChat = true;
+                // Update the user arr
                 updatedState.push(user);
-
+                // Return the new state
                 return updatedState;
             })
         });
-
-        connectedRef.on("value", snap => {
+        // User offline && onMount
+        connectedRef.on('value', snap => {
+            // Check for user
             if (props.user && snap.val()) {
+                // Get user status
                 const userStatusRef = statusRef.child(props.user.uid);
+                // Set to be offline
                 userStatusRef.set(true);
+                // Call disconnect from firebase
                 userStatusRef.onDisconnect().remove();
             }
         })
-
+        // Unmount
         return () => { usersRef.off(); connectedRef.off(); }
     }, [props.user])
 
     useEffect(() => {
 
-        statusRef.on("child_added", snap => {
+        statusRef.on('child_added', snap => {
             setConnectedUsersState((currentState) => {
                 let updatedState = [...currentState];
                 updatedState.push(snap.key);
@@ -54,7 +64,7 @@ const PrivateChat = (props) => {
             })
         });
 
-        statusRef.on("child_removed", snap => {
+        statusRef.on('child_removed', snap => {
             setConnectedUsersState((currentState) => {
                 let updatedState = [...currentState];
 
@@ -76,11 +86,11 @@ const PrivateChat = (props) => {
                     onClick={() => selectUser(user)}
                     active={props.channel && generateChannelId(user.id) === props.channel.id}
                 >
-                    <Icon name="circle" color={`${connectedUsersState.indexOf(user.id) !== -1 ? "green" : "red"}`} />
+                    <Icon name='circle' color={`${connectedUsersState.indexOf(user.id) !== -1 ? 'green' : 'red'}`} />
 
                     <Notification user={props.user} channel={props.channel}
                         notificationChannelId={generateChannelId(user.id)}
-                        displayName={"@ " + user.name} />
+                        displayName={'@ ' + user.name} />
                         
                 </Menu.Item>
             })
@@ -96,7 +106,7 @@ const PrivateChat = (props) => {
     }
 
     const setLastVisited = (user, channel) => {
-        const lastVisited = usersRef.child(user.uid).child("lastVisited").child(channel.id);
+        const lastVisited = usersRef.child(user.uid).child('lastVisited').child(channel.id);
         lastVisited.set(firebase.database.ServerValue.TIMESTAMP);
         lastVisited.onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
     }
@@ -113,7 +123,7 @@ const PrivateChat = (props) => {
     return <Menu.Menu style={{ marginTop: '35px' }}>
         <Menu.Item style={{ fontSize: '17px' }}>
             <span>
-                <Icon name="mail" /> Chat
+                <Icon name='mail' /> Chat
             </span>
             ({usersState.length - 1})
         </Menu.Item>

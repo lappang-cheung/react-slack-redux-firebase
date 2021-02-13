@@ -7,13 +7,13 @@ import * as serviceWorker from './serviceWorker';
 
 // Custom Components
 import App from './App';
-import Register from "./components/Auth/Register/Register.component";
-import Login from "./components/Auth/Login/Login.component";
+import Register from "./components/Auth/Register/Register";
+import Login from "./components/Auth/Login/Login";
 import firebase from "./server/firebase";
 
 // Redux
 import { setUser } from "./store/actions/creator";
-import { AppLoader } from "./components/AppLoader/AppLoader.component";
+import { AppLoader } from "./components/AppLoader/AppLoader";
 import { store } from "./store/store"
 
 // CSS
