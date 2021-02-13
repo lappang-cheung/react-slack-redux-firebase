@@ -1,22 +1,25 @@
-import { Grid } from 'semantic-ui-react'
+import React from 'react';
+import { SideBar } from "./components/SideBar/SideBar.component";
+import Messages from "./components/Messages/Messages.component"
 
-import Sidebar from './components/Sidebar/Sidebar'
-import Messages from './components/Messages/Messages'
+import './App.css';
+import { Grid } from 'semantic-ui-react';
 
 function App() {
   return (
     <Grid columns="equal">
-      <Grid.Column width={3}>
-        <Sidebar />
-      </Grid.Column>
-      
-      <Grid.Column width={12}>
+      <SideBar />
+      <Grid.Column className="messagepanel">
         <Messages />
       </Grid.Column>
+
       <Grid.Column width={3}>
-        <span/>
+        <span>
+
+        </span>
       </Grid.Column>
     </Grid>
+
   );
 }
 
