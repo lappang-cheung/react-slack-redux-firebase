@@ -1,20 +1,25 @@
+// Required Packages
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router, Switch, Route, withRouter } from "react-router-dom";
 import { Provider, connect } from "react-redux";
-import { createStore } from "redux";
+import * as serviceWorker from './serviceWorker';
+
+// Custom Components
+import App from './App';
 import Register from "./components/Auth/Register/Register.component";
 import Login from "./components/Auth/Login/Login.component";
 import firebase from "./server/firebase";
-import { combinedReducers } from "./store/reducer";
-import { setUser } from "./store/actioncreator";
-import { AppLoader } from "./components/AppLoader/AppLoader.component";
 
+// Redux
+import { setUser } from "./store/actions/creator";
+import { AppLoader } from "./components/AppLoader/AppLoader.component";
+import { store } from "./store/store"
+
+// CSS
 import "semantic-ui-css/semantic.min.css"
 
-const store = createStore(combinedReducers)
+
 
 const Index = (props) => {
 
@@ -29,8 +34,6 @@ const Index = (props) => {
       }
     })
   }, []);
-
-  console.log("Debug", props.currentUser);
 
   return (<>
     <AppLoader loading={props.loading && props.location.pathname === "/"} />

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import firebase from "../../../server/firebase";
-import { setChannel } from "../../../store/actioncreator"
+import { setChannel } from "../../../store/actions/creator"
 import { Notification } from "../Notification/Notification.component";
 
 import './Channels.css';

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import firebase from "../../../server/firebase";
-import { setChannel } from "../../../store/actioncreator"
+import { setChannel } from "../../../store/actions/creator"
 import { Notification } from "../Notification/Notification.component";
 
 import { Menu, Icon } from 'semantic-ui-react';
@@ -68,7 +68,7 @@ const PrivateChat = (props) => {
     }, [usersState]);
 
     const displayUsers = () => {
-        if (usersState.length > 0) {
+        if (usersState.length > 0 && props.user) {
             return usersState.filter((user) => user.id !== props.user.uid).map((user) => {
                 return <Menu.Item
                     key={user.id}

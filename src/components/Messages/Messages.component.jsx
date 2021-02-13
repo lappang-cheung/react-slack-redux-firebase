@@ -4,7 +4,7 @@ import MessageHeader from './MessageHeader/MessageHeader.component';
 import MessageContent from "./MessageContent/MessageContent.component";
 import MessageInput from "./MessageInput/MessageInput.component";
 import { connect } from "react-redux";
-import { setfavouriteChannel, removefavouriteChannel } from "../../store/actioncreator";
+import { setfavouriteChannel, removefavouriteChannel } from "../../store/actions/creator";
 import firebase from "../../server/firebase";
 import { Segment, Comment } from 'semantic-ui-react';
 import "./Messages.css"; 
@@ -59,7 +59,7 @@ const Messages = (props) => {
 
     const displayMessages = () => {
         let messagesToDisplay = searchTermState ? filterMessageBySearchTerm() : messagesState;
-        if (messagesToDisplay.length > 0) {
+        if (messagesToDisplay.length > 0 && props.user) {
             return messagesToDisplay.map((message) => {
                 return <MessageContent imageLoaded={imageLoaded} ownMessage={message.user.id === props.user.uid} key={message.timestamp} message={message} />
             })

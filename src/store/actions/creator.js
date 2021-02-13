@@ -1,4 +1,9 @@
-import { SET_USER, SET_CHANNEL ,SET_FAVOURITECHANNEL,REMOVE_FAVOURITECHANNEL} from './actiontypes';
+import {
+    SET_USER,
+    SET_CHANNEL,
+    SET_FAVOURITECHANNEL,
+    REMOVE_FAVOURITECHANNEL
+} from './types'
 
 export const setUser = (user) => {
     return {
