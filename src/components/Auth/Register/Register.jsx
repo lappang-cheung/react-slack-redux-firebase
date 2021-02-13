@@ -8,9 +8,10 @@ import {
     Icon, 
     Button, 
     Message 
-} from 'semantic-ui-react'
+} from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components'
+import { Helmet } from 'react-helmet';
+import styled from 'styled-components';
 
 // Custom Package
 import firebase from '../../../server/firebase';
@@ -144,67 +145,78 @@ const Register = () => {
         return errorState.map((error, index) => <p key={index}>{error.message}</p>)
     }
 
-    return (<StyledGrid verticalAlign='middle' textAlign='center' className='grid-form' >
-        <Grid.Column style={{ maxWidth: '500px' }}>
-            <Header icon as='h2'>
-                <Icon name='slack' />
-                Register
-            </Header>
-            <Form  onSubmit={onSubmit}>
-                <Segment stacked>
-                    <Form.Input
-                        name='userName'
-                        value={userState.userName}
-                        icon='user'
-                        iconPosition='left'
-                        onChange={handleInput}
-                        type='text'
-                        placeholder='User Name'
-                    />
-                    <Form.Input
-                        name='email'
-                        value={userState.email}
-                        icon='mail'
-                        iconPosition='left'
-                        onChange={handleInput}
-                        type='email'
-                        placeholder='User Email'
-                    />
-                    <Form.Input
-                        name='password'
-                        value={userState.password}
-                        icon='lock'
-                        iconPosition='left'
-                        onChange={handleInput}
-                        type='password'
-                        placeholder='User Password'
-                    />
-                    <Form.Input
-                        name='confirmpassword'
-                        value={userState.confirmpassword}
-                        icon='lock'
-                        iconPosition='left'
-                        onChange={handleInput}
-                        type='password'
-                        placeholder='Confirm Password'
-                    />
-                </Segment>
-                <Button disabled={isLoading} loading={isLoading}>Submit</Button>
-            </Form >
-            {errorState.length > 0 && <Message error>
-                <h3>Errors</h3>
-                {formaterrors()}
-            </Message>
-            }
-            {isSuccess && <Message success>
-                <h3>Successfully Registered</h3>
-            </Message>
-            }
-            <Message>
-                Already an User? <Link to='/login' >Login </Link>
-            </Message>
-        </Grid.Column>
-    </StyledGrid>)
+    return (
+        <>
+            <Helmet>
+                <title>Slacker | Register</title>
+            </Helmet>
+            <StyledGrid 
+                verticalAlign='middle' 
+                textAlign='center' 
+                className='grid-form' 
+            >
+                <Grid.Column style={{ maxWidth: '500px' }}>
+                    <Header icon as='h2'>
+                        <Icon name='slack' />
+                        Register
+                    </Header>
+                    <Form  onSubmit={onSubmit}>
+                        <Segment stacked>
+                            <Form.Input
+                                name='userName'
+                                value={userState.userName}
+                                icon='user'
+                                iconPosition='left'
+                                onChange={handleInput}
+                                type='text'
+                                placeholder='User Name'
+                            />
+                            <Form.Input
+                                name='email'
+                                value={userState.email}
+                                icon='mail'
+                                iconPosition='left'
+                                onChange={handleInput}
+                                type='email'
+                                placeholder='User Email'
+                            />
+                            <Form.Input
+                                name='password'
+                                value={userState.password}
+                                icon='lock'
+                                iconPosition='left'
+                                onChange={handleInput}
+                                type='password'
+                                placeholder='User Password'
+                            />
+                            <Form.Input
+                                name='confirmpassword'
+                                value={userState.confirmpassword}
+                                icon='lock'
+                                iconPosition='left'
+                                onChange={handleInput}
+                                type='password'
+                                placeholder='Confirm Password'
+                            />
+                        </Segment>
+                        <Button disabled={isLoading} loading={isLoading}>Submit</Button>
+                    </Form >
+                    {errorState.length > 0 && <Message error>
+                        <h3>Errors</h3>
+                        {formaterrors()}
+                    </Message>
+                    }
+                    {isSuccess && <Message success>
+                        <h3>Successfully Registered</h3>
+                    </Message>
+                    }
+                    <Message>
+                        Already an User? <Link to='/login' >Login </Link>
+                    </Message>
+                </Grid.Column>
+            </StyledGrid>
+        </>
+    )
 }
 
 export default Register;

@@ -8,9 +8,10 @@ import {
     Icon, 
     Button, 
     Message 
-} from 'semantic-ui-react'
-import { Link } from 'react-router-dom'
-import styled from 'styled-components'
+} from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+import styled from 'styled-components';
 
 // Custom Package
 import firebase from '../../../server/firebase';
@@ -85,6 +86,10 @@ const Login = () => {
     }
 
     return (
+        <>
+        <Helmet>
+            <title>Slacker | Login</title>
+        </Helmet>
         <StyledGrid 
             verticalAlign="middle" 
             textAlign="center" 
@@ -128,6 +133,7 @@ const Login = () => {
                 </Message>
             </Grid.Column>
         </StyledGrid>
+        </>
     )
 }
 
