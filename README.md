@@ -18,3 +18,6 @@ The purpose of this application was to serve a few main purposes: (i) Highlight 
 ## In Progress
 - Unit Testing
 - Docker/Kubernetes?
+
+## Demo Link
+https://slacker-react-redux-firebase.netlify.app
