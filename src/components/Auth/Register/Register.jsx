@@ -1,12 +1,30 @@
+// Required Package
 import React, { useState } from 'react';
-import { Grid, Form, Segment, Header, Icon, Button, Message } from 'semantic-ui-react'
+import { 
+    Grid, 
+    Form, 
+    Segment, 
+    Header, 
+    Icon, 
+    Button, 
+    Message 
+} from 'semantic-ui-react'
+import { Link } from 'react-router-dom';
+import styled from 'styled-components'
+
+// Custom Package
 import firebase from '../../../server/firebase';
 
-import "../Auth.css"
-import { Link } from 'react-router-dom';
+// Styled Components
+const StyledGrid = styled(Grid)`
+    padding: 1rem;
+    height: 100vh;
+    background: #eee;
+`
 
 const Register = () => {
 
+    // User state
     let user = {
         userName: '',
         email: '',
@@ -14,15 +32,19 @@ const Register = () => {
         confirmpassword: ''
     }
 
+    // Error Arr
     let errors = [];
 
-    let userCollectionRef = firebase.database().ref('users');
-
+    // State
     const [userState, setuserState] = useState(user);
     const [errorState, seterrorState] = useState(errors);
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
+    // Firebase refs
+    let userCollectionRef = firebase.database().ref('users');
+
+    // Multiple inputs
     const handleInput = (event) => {
         let target = event.target;
         setuserState((currentState) => {
@@ -32,9 +54,10 @@ const Register = () => {
         })
     }
 
+    // Form validation
     const checkForm = () => {
         if (isFormEmpty()) {
-            seterrorState((error) => error.concat({ message: "Please fill in all fields" }));
+            seterrorState((error) => error.concat({ message: 'Please fill in all fields' }));
             return false;
         }
         else if (!checkPassword()) {
@@ -52,16 +75,17 @@ const Register = () => {
 
     const checkPassword = () => {
         if (userState.password.length < 8) {
-            seterrorState((error) => error.concat({ message: "Password length should be greater than 8" }));
+            seterrorState((error) => error.concat({ message: 'Password length should be greater than 8' }));
             return false;
         }
         else if (userState.password !== userState.confirmpassword) {
-            seterrorState((error) => error.concat({ message: "Password and Confirm Password does not match" }));
+            seterrorState((error) => error.concat({ message: 'Password and Confirm Password does not match' }));
             return false;
         }
         return true;
     }
 
+    // Firebase register with email and password
     const onSubmit = (event) => {
         seterrorState(() => []);
         setIsSuccess(false);
@@ -120,53 +144,53 @@ const Register = () => {
         return errorState.map((error, index) => <p key={index}>{error.message}</p>)
     }
 
-    return (<Grid verticalAlign="middle" textAlign="center" className="grid-form" >
+    return (<StyledGrid verticalAlign='middle' textAlign='center' className='grid-form' >
         <Grid.Column style={{ maxWidth: '500px' }}>
-            <Header icon as="h2">
-                <Icon name="slack" />
+            <Header icon as='h2'>
+                <Icon name='slack' />
                 Register
             </Header>
-            <Form onSubmit={onSubmit}>
+            <Form  onSubmit={onSubmit}>
                 <Segment stacked>
                     <Form.Input
-                        name="userName"
+                        name='userName'
                         value={userState.userName}
-                        icon="user"
-                        iconPosition="left"
+                        icon='user'
+                        iconPosition='left'
                         onChange={handleInput}
-                        type="text"
-                        placeholder="User Name"
+                        type='text'
+                        placeholder='User Name'
                     />
                     <Form.Input
-                        name="email"
+                        name='email'
                         value={userState.email}
-                        icon="mail"
-                        iconPosition="left"
+                        icon='mail'
+                        iconPosition='left'
                         onChange={handleInput}
-                        type="email"
-                        placeholder="User Email"
+                        type='email'
+                        placeholder='User Email'
                     />
                     <Form.Input
-                        name="password"
+                        name='password'
                         value={userState.password}
-                        icon="lock"
-                        iconPosition="left"
+                        icon='lock'
+                        iconPosition='left'
                         onChange={handleInput}
-                        type="password"
-                        placeholder="User Password"
+                        type='password'
+                        placeholder='User Password'
                     />
                     <Form.Input
-                        name="confirmpassword"
+                        name='confirmpassword'
                         value={userState.confirmpassword}
-                        icon="lock"
-                        iconPosition="left"
+                        icon='lock'
+                        iconPosition='left'
                         onChange={handleInput}
-                        type="password"
-                        placeholder="Confirm Password"
+                        type='password'
+                        placeholder='Confirm Password'
                     />
                 </Segment>
                 <Button disabled={isLoading} loading={isLoading}>Submit</Button>
-            </Form>
+            </Form >
             {errorState.length > 0 && <Message error>
                 <h3>Errors</h3>
                 {formaterrors()}
@@ -177,10 +201,10 @@ const Register = () => {
             </Message>
             }
             <Message>
-                Already an User? <Link to="/login" >Login </Link>
+                Already an User? <Link to='/login' >Login </Link>
             </Message>
         </Grid.Column>
-    </Grid>)
+    </StyledGrid>)
 }
 
 export default Register;

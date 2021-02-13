@@ -1,20 +1,36 @@
+// Required Packages
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import firebase from "../../../server/firebase";
-import { setChannel } from "../../../store/actioncreator"
-import { Notification } from "../Notification/Notification.component";
-
-import './Channels.css';
 import { Menu, Icon, Modal, Button, Form, Segment } from 'semantic-ui-react';
+import styled from 'styled-components'
+
+// Custom Packages
+import firebase from '../../../server/firebase';
+import { setChannel } from '../../../store/actions/creator'
+import { Notification } from '../Notification/Notification';
+
+// Styled Components
+const StyledMenuItem = styled(Menu.Item)`
+    color : rgb(180,180,185) !important;
+`
+const StyledClickableSpan = styled.span`
+    &:hover {
+        cursor: pointer;
+    }
+`
+
 
 const Channels = (props) => {
+
+    // States
     const [modalOpenState, setModalOpenState] = useState(false);
     const [channelAddState, setChannelAddState] = useState({ name: '', description: '' });
     const [isLoadingState, setLoadingState] = useState(false);
     const [channelsState, setChannelsState] = useState([]);
 
-    const channelsRef = firebase.database().ref("channels");
-    const usersRef = firebase.database().ref("users");
+    // Firebase refs
+    const channelsRef = firebase.database().ref('channels');
+    const usersRef = firebase.database().ref('users');
 
     useEffect(() => {
         channelsRef.on('child_added', (snap) => {
@@ -49,7 +65,7 @@ const Channels = (props) => {
     const displayChannels = () => {
         if (channelsState.length > 0) {
             return channelsState.map((channel) => {
-                return <Menu.Item
+                return <StyledMenuItem
                     key={channel.id}
                     name={channel.name}
                     onClick={() => selectChannel(channel)}
@@ -57,9 +73,9 @@ const Channels = (props) => {
                 >
                       <Notification user={props.user} channel={props.channel}
                         notificationChannelId={channel.id}
-                        displayName= {"# " + channel.name} />
+                        displayName= {'# ' + channel.name} />
                    
-                </Menu.Item>
+                </StyledMenuItem>
             })
         }
     }
@@ -71,7 +87,7 @@ const Channels = (props) => {
     }
 
     const setLastVisited = (user, channel) => {
-        const lastVisited = usersRef.child(user.uid).child("lastVisited").child(channel.id);
+        const lastVisited = usersRef.child(user.uid).child('lastVisited').child(channel.id);
         lastVisited.set(firebase.database.ServerValue.TIMESTAMP);
         lastVisited.onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
     }
@@ -117,18 +133,18 @@ const Channels = (props) => {
     }
 
     return <> <Menu.Menu style={{ marginTop: '35px' }}>
-        <Menu.Item style={{fontSize : '17px'}}>
+        <StyledMenuItem style={{fontSize : '17px'}}>
             <span>
-                <Icon name="exchange" /> Channels
+                <Icon name='exchange' /> Channels
             </span>
             ({channelsState.length})
-        </Menu.Item>
+        </StyledMenuItem>
         {displayChannels()}
-        <Menu.Item>
-            <span className="clickable" onClick={openModal} >
-                <Icon name="add" /> ADD
-            </span>
-        </Menu.Item>
+        <StyledMenuItem>
+            <StyledClickableSpan onClick={openModal} >
+                <Icon name='add' /> ADD
+            </StyledClickableSpan>
+        </StyledMenuItem>
     </Menu.Menu>
         <Modal open={modalOpenState} onClose={closeModal}>
             <Modal.Header>
@@ -138,28 +154,28 @@ const Channels = (props) => {
                 <Form onSubmit={onSubmit}>
                     <Segment stacked>
                         <Form.Input
-                            name="name"
+                            name='name'
                             value={channelAddState.name}
                             onChange={handleInput}
-                            type="text"
-                            placeholder="Enter Channel Name"
+                            type='text'
+                            placeholder='Enter Channel Name'
                         />
                         <Form.Input
-                            name="description"
+                            name='description'
                             value={channelAddState.description}
                             onChange={handleInput}
-                            type="text"
-                            placeholder="Enter Channel Description"
+                            type='text'
+                            placeholder='Enter Channel Description'
                         />
                     </Segment>
                 </Form>
             </Modal.Content>
             <Modal.Actions>
                 <Button loading={isLoadingState} onClick={onSubmit}>
-                    <Icon name="checkmark" /> Save
+                    <Icon name='checkmark' /> Save
                 </Button>
                 <Button onClick={closeModal}>
-                    <Icon name="remove" /> Cancel
+                    <Icon name='remove' /> Cancel
                 </Button>
             </Modal.Actions>
         </Modal>

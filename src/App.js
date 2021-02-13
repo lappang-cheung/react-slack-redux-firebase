@@ -1,6 +1,6 @@
 import React from 'react';
-import { SideBar } from "./components/SideBar/SideBar.component";
-import Messages from "./components/Messages/Messages.component"
+import { SideBar } from "./components/SideBar/SideBar";
+import Messages from "./components/Messages/Messages"
 
 import './App.css';
 import { Grid } from 'semantic-ui-react';
