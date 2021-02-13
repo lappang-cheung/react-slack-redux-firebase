@@ -47,22 +47,20 @@ const Messages = (props) => {
     }, [props.channel])
 
     useEffect(() => {
-
         if (props.user) {
             usersRef.child(props.user.uid).child('favourite')
                 .on('child_added', (snap) => {
                     props.setfavouriteChannel(snap.val());
                 })
-
             usersRef.child(props.user.uid).child('favourite')
                 .on('child_removed', (snap) => {
                     props.removefavouriteChannel(snap.val());
                 })
-
             return () => usersRef.child(props.user.uid).child('favourite').off();
         }
     }, [props.user])
 
+    // Scroll view
     useEffect(()=> {
         divRef.scrollIntoView({behavior : 'smooth'});
     },[messagesState])
@@ -71,7 +69,12 @@ const Messages = (props) => {
         let messagesToDisplay = searchTermState ? filterMessageBySearchTerm() : messagesState;
         if (messagesToDisplay.length > 0 && props.user) {
             return messagesToDisplay.map((message) => {
-                return <MessageContent imageLoaded={imageLoaded} ownMessage={message.user.id === props.user.uid} key={message.timestamp} message={message} />
+                return <MessageContent 
+                        imageLoaded={imageLoaded} 
+                        ownMessage={message.user.id === props.user.uid} 
+                        key={message.timestamp}
+                        message={message} 
+                    />
             })
         }
     }

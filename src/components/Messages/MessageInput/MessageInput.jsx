@@ -1,20 +1,24 @@
+// Required Packages
 import React, { useState } from 'react';
 import { Segment, Input, Button } from 'semantic-ui-react';
-import firebase from '../../../server/firebase';
 import { connect } from 'react-redux';
 import { ImageUpload } from '../ImageUpload/ImageUpload'
 import {v4 as uuidv4} from 'uuid';
 
+// Custom Package
+import firebase from '../../../server/firebase';
+
 const MessageInput = (props) => {
 
-    const messageRef = firebase.database().ref('messages');
-
-    const storageRef = firebase.storage().ref();
-
+    // State
     const [messageState, setMessageState] = useState('');
-
     const [fileDialogState, setFileDialog] = useState(false);
 
+    // Firebase refs
+    const messageRef = firebase.database().ref('messages');
+    const storageRef = firebase.storage().ref();
+
+    // Message object
     const createMessageInfo = (downloadUrl) => {
         return {
             user: {
@@ -28,6 +32,7 @@ const MessageInput = (props) => {
         }
     }
 
+    // Send Message
     const sendMessage = (downloadUrl) => {
         if (messageState || downloadUrl) {
             messageRef.child(props.channel.id)
@@ -38,11 +43,13 @@ const MessageInput = (props) => {
         }
     }
 
+    // Message Input
     const onMessageChange = (e) => {
         const target = e.target;
         setMessageState(target.value);
     }
 
+    // Action Button
     const createActionButtons = () => {
         return <>
             <Button icon='send' onClick={() => {sendMessage() }} />
@@ -50,10 +57,11 @@ const MessageInput = (props) => {
         </>
     }
 
+    // Uploading Image
     const uploadImage = (file, contentType) => {
-
+        // Create path
         const filePath = `chat/images/${uuidv4()}.jpg`;
-
+        // Create firebase storage ref
         storageRef.child(filePath).put(file, { contentType: contentType })
             .then((data) => {
                 data.ref.getDownloadURL()
@@ -65,17 +73,23 @@ const MessageInput = (props) => {
             .catch((err) => console.log(err));
     }
 
-    return <Segment>
-        <Input
-            onChange={onMessageChange}
-            fluid={true}
-            name='message'
-            value={messageState}
-            label={createActionButtons()}
-            labelPosition='right'
-        />
-        <ImageUpload uploadImage={uploadImage} open={fileDialogState} onClose={() => setFileDialog(false)} />
-    </Segment>
+    return (
+        <Segment>
+            <Input
+                onChange={onMessageChange}
+                fluid={true}
+                name='message'
+                value={messageState}
+                label={createActionButtons()}
+                labelPosition='right'
+            />
+            <ImageUpload 
+                uploadImage={uploadImage} 
+                open={fileDialogState} 
+                onClose={() => setFileDialog(false)} 
+            />
+        </Segment>
+    )
 }
 
 const mapStateToProps = (state) => {
