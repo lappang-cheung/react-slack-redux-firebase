@@ -19,20 +19,38 @@ import { store } from "./store/store"
 // CSS
 import "semantic-ui-css/semantic.min.css"
 
-
-
 const Index = (props) => {
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        props.setUser(user);
-        props.history.push("/");
-      } else {
-        props.setUser(null);
-        props.history.push("/login");
+    // Check if the user has sign in with
+    if(firebase.auth().isSignInWithEmailLink(window.location.href)) {
+      let email = window.localStorage.getItem('emailForSignIn')
+      if (!email) {
+        email = window.prompt('Please provide your email for confirmation')
       }
-    })
+      firebase.auth().signInWithEmailLink(email, window.location.href)
+        .then(result => {
+          window.localStorage.getItem('emailForSignIn')
+          props.setUser(result.user)
+          props.history.push("/")
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    } else {
+      // Regular user log in
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          props.setUser(user);
+          props.history.push("/");
+        } else {
+          props.setUser(null);
+          if(!window.location.href.includes('apiKey')) {
+            props.history.push("/login")
+          }
+        }
+      })
+    }
   }, []);
 
   return (<>
