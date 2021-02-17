@@ -1,5 +1,5 @@
 const actionCodeSettings = {
-    url: 'http://localhost:3000',
+    url: 'https://slacker-react-redux-firebase.netlify.app',
     handleCodeInApp: true
 }
 
