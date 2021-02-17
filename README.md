@@ -8,6 +8,7 @@ The purpose of this application was to serve a few main purposes: (i) Highlight 
 - User able to favourite channels
 - User status
 - Notifications
+- One Time Password Sign In
 
 ## Upcoming/Possible Improvements
 - Video/voice call
