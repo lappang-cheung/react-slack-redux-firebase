@@ -28,6 +28,7 @@ const UserInfo = (props) => {
         firebase.auth()
             .signOut()
             .then(() => console.log("user signed out"));
+        props.history && props.history.push('/login')
     }
     //  Check user exist before render
     if (props.user) {
